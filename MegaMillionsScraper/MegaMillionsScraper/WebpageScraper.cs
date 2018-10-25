@@ -66,5 +66,10 @@ namespace MegaMillionsScraper
 
             return new MegaMillionsNumbers(date, whiteBalls, megaBall);
         }
+
+        public static async Task<MegaMillionsNumbers> GetNumbersForDateAsync(DateTime date)
+        {
+            return await Task.Run(() => GetNumbersForDate(date));
+        }
     }
 }

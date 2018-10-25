@@ -18,16 +18,21 @@ namespace MegaMillionsScraperUI
             _startDate = new DateTime(2017, 10, 31);
             _endDate = DateTime.Today;
 
-            _scrapeNumbersCommand = new DelegateCommand(ScrapeNumbers);
+            _scrapeNumbersCommand = new DelegateCommand(ScrapeNumbers, CanScrapeNumbers);
         }
 
         // VARIABLES
         private DateTime _startDate;
         private DateTime _endDate;
+
         private List<MegaMillionsNumbers> _scrapedNumbers = new List<MegaMillionsNumbers>();
+
         private Dictionary<int, int> _whiteBallOccurrences = new Dictionary<int, int>();
         private Dictionary<int, int> _megaBallOccurrences = new Dictionary<int, int>();
+
         private DelegateCommand _scrapeNumbersCommand;
+
+        private bool _isScraping = false;
 
         // PROPERTIES
         public DateTime StartDate
@@ -105,6 +110,20 @@ namespace MegaMillionsScraperUI
             get { return DateTime.Today; }
         }
 
+        public bool IsScraping
+        {
+            get { return _isScraping; }
+            set
+            {
+                if (value != _isScraping)
+                {
+                    _isScraping = value;
+                    RaisePropertyChanged("IsScraping");
+                    ScrapeNumbersCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
 
         // FUNCTIONS
         public void ClearAllFields()
@@ -114,19 +133,31 @@ namespace MegaMillionsScraperUI
             MegaBallOccurrences = new Dictionary<int, int>();
         }
 
-        public void ScrapeNumbers()
+        public async void ScrapeNumbers()
         {
             // TODO: Make this async so that the UI doesn't freeze up while working?
 
             ClearAllFields();
+            IsScraping = true;
 
             List<DateTime> lottoDates = DateFetcher.FetchDateTimesInRange(StartDate, EndDate);
             List<MegaMillionsNumbers> megaNumbers = new List<MegaMillionsNumbers>();
-            foreach (var dt in lottoDates) megaNumbers.Add(WebpageScraper.GetNumbersForDate(dt));
+            foreach (var dt in lottoDates)
+            {
+                MegaMillionsNumbers numbers = await WebpageScraper.GetNumbersForDateAsync(dt);
+                megaNumbers.Add(numbers);
+            }
 
             ScrapedNumbers = megaNumbers;
             WhiteBallOccurrences = NumberCalculator.GetOccurrencesOfWhiteBalls(megaNumbers);
             MegaBallOccurrences = NumberCalculator.GetOccurrencesOfMegaBalls(megaNumbers);
+
+            IsScraping = false;
+        }
+
+        public bool CanScrapeNumbers()
+        {
+            return !IsScraping;
         }
     }
 }
