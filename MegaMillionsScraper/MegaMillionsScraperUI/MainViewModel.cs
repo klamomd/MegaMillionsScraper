@@ -122,8 +122,18 @@ namespace MegaMillionsScraperUI
                 {
                     _isScraping = value;
                     RaisePropertyChanged("IsScraping");
+                    RaisePropertyChanged("ScrapeButtonText");
                     ScrapeNumbersCommand.RaiseCanExecuteChanged();
                 }
+            }
+        }
+
+        public string ScrapeButtonText
+        {
+            get
+            {
+                if (IsScraping) return "Scraping...";
+                else return "Scrape Numbers";
             }
         }
 

@@ -52,7 +52,7 @@
             <DatePicker Grid.Row="0" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=StartDate}"/>
             <Label Grid.Row="1" Grid.Column="0">End Date:</Label>
             <DatePicker Grid.Row="1" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=EndDate}"/>
-            <Button Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="5" Margin="5" Command="{Binding Path=ScrapeNumbersCommand}">Scrape Numbers</Button>
+            <Button Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="5" Margin="5" Command="{Binding Path=ScrapeNumbersCommand}" Content="{Binding ScrapeButtonText}"/>
             <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Visibility="{Binding Path=IsScraping, Converter={StaticResource boolToVisConverter}}">
                 <Label VerticalAlignment="Center">Progress:</Label>
                 <ProgressBar Height="25" Margin="5" Minimum="0" Maximum="{Binding ProgressMaximum}" Value="{Binding CurrentProgress}" />
