@@ -16,8 +16,7 @@ namespace MegaMillionsScraper
             DateTime startDate = new DateTime(2017, 10, 31);
             DateTime endDate = new DateTime(2018, 10, 23);
 
-            // The drawing date immediately after 10/31/17 was 3 days after, so we use true for incrementByThreeFirst.
-            List<DateTime> lottoDates = DateFetcher.FetchDateTimesInRange(startDate, endDate, true);
+            List<DateTime> lottoDates = DateFetcher.FetchDateTimesInRange(startDate, endDate);
             List<MegaMillionsNumbers> megaNumbers = new List<MegaMillionsNumbers>();
 
             // Loop through each DateTime, print it to the console to show we are working on it, and then scrape the webpage for the numbers and add it to our megaNumbers list.

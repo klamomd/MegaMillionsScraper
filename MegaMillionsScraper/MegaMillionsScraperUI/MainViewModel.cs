@@ -18,6 +18,8 @@ namespace MegaMillionsScraperUI
             _startDate = new DateTime(2017, 10, 31);
             _endDate = DateTime.Today;
 
+            _scrapeNumbersCommand = new DelegateCommand(ScrapeNumbers);
+
 #if DEBUG
             _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 10, 31), new List<int> { 1, 2, 3, 4, 5 }, 1));
             _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 11, 1), new List<int> { 6, 7, 8, 9, 10 }, 2));
@@ -43,7 +45,7 @@ namespace MegaMillionsScraperUI
         private List<MegaMillionsNumbers> _scrapedNumbers = new List<MegaMillionsNumbers>();
         private Dictionary<int, int> _whiteBallOccurrences = new Dictionary<int, int>();
         private Dictionary<int, int> _megaBallOccurrences = new Dictionary<int, int>();
-
+        private DelegateCommand _scrapeNumbersCommand;
 
         // PROPERTIES
         public DateTime StartDate
@@ -109,6 +111,35 @@ namespace MegaMillionsScraperUI
                     RaisePropertyChanged("MegaBallOccurrences");
                 }
             }
+        }
+
+        public DelegateCommand ScrapeNumbersCommand
+        {
+            get { return _scrapeNumbersCommand; }
+        }
+
+
+        // FUNCTIONS
+        public void ClearAllFields()
+        {
+            ScrapedNumbers = new List<MegaMillionsNumbers>();
+            WhiteBallOccurrences = new Dictionary<int, int>();
+            MegaBallOccurrences = new Dictionary<int, int>();
+        }
+
+        public void ScrapeNumbers()
+        {
+            // TODO: Make this async so that the UI doesn't freeze up while working?
+
+            ClearAllFields();
+
+            List<DateTime> lottoDates = DateFetcher.FetchDateTimesInRange(StartDate, EndDate);
+            List<MegaMillionsNumbers> megaNumbers = new List<MegaMillionsNumbers>();
+            foreach (var dt in lottoDates) megaNumbers.Add(WebpageScraper.GetNumbersForDate(dt));
+
+            ScrapedNumbers = megaNumbers;
+            WhiteBallOccurrences = NumberCalculator.GetOccurrencesOfWhiteBalls(megaNumbers);
+            MegaBallOccurrences = NumberCalculator.GetOccurrencesOfMegaBalls(megaNumbers);
         }
     }
 }
