@@ -50,5 +50,13 @@ namespace MegaMillionsScraper
                 return string.Join(" ", Numbers);
             }
         }
+
+        public string DateOfDrawingString
+        {
+            get
+            {
+                return DateOfDrawing.ToString("M/d/yyyy");
+            }
+        }
     }
 }

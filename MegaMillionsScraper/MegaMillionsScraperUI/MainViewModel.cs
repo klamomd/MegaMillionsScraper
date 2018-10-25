@@ -19,24 +19,6 @@ namespace MegaMillionsScraperUI
             _endDate = DateTime.Today;
 
             _scrapeNumbersCommand = new DelegateCommand(ScrapeNumbers);
-
-#if DEBUG
-            _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 10, 31), new List<int> { 1, 2, 3, 4, 5 }, 1));
-            _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 11, 1), new List<int> { 6, 7, 8, 9, 10 }, 2));
-            _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 11, 2), new List<int> { 11, 12, 13, 14, 15 }, 3));
-            _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 11, 3), new List<int> { 16, 17, 18, 19, 20 }, 4));
-            _scrapedNumbers.Add(new MegaMillionsNumbers(new DateTime(2017, 11, 4), new List<int> { 21, 22, 23, 24, 25 }, 5));
-
-            _whiteBallOccurrences.Add(1, 2);
-            _whiteBallOccurrences.Add(2, 4);
-            _whiteBallOccurrences.Add(3, 6);
-            _whiteBallOccurrences.Add(4, 8);
-            _whiteBallOccurrences.Add(5, 10);
-
-            _megaBallOccurrences.Add(1, 3);
-            _megaBallOccurrences.Add(2, 6);
-            _megaBallOccurrences.Add(3, 9);
-#endif
         }
 
         // VARIABLES
@@ -116,6 +98,11 @@ namespace MegaMillionsScraperUI
         public DelegateCommand ScrapeNumbersCommand
         {
             get { return _scrapeNumbersCommand; }
+        }
+
+        public DateTime MaxDate
+        {
+            get { return DateTime.Today; }
         }
 
 
