@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MegaMillionsScraper
 {
+    // A class used to contain a set of MegaMillions numbers.
     public class MegaMillionsNumbers
     {
         public MegaMillionsNumbers(List<int> numbers, int megaplier)
@@ -17,7 +18,7 @@ namespace MegaMillionsScraper
             if (numbers.Any(n => (n < 1 || n > 70))) throw new ArgumentException("numbers", "At least one number is out of range (valid range: 1-70 (inclusive)).");
             //if (numbers.Any(n => (n < 1 || n > 56))) throw new ArgumentException("numbers", "At least one number is out of range (valid range: 1-56 (inclusive)).");
 
-            if (megaplier < 1 || megaplier > 25) throw new ArgumentException("megaplier", "megaplier is out of range (valid range: 1-46 (inclusive)).");
+            if (megaplier < 1 || megaplier > 25) throw new ArgumentException("megaplier", "megaplier is out of range (valid range: 1-25 (inclusive)).");
             //if (megaplier < 1 || megaplier > 46) throw new ArgumentException("megaplier", "megaplier is out of range (valid range: 1-46 (inclusive)).");
 
             Numbers = numbers;

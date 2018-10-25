@@ -8,6 +8,8 @@ namespace MegaMillionsScraper
 {
     static class DateFetcher
     {
+        // Returns a list of DateTimes starting at startDate and ending at or before endDate which follow the pattern of MegaMillions drawings.
+        // Drawing dates alternate between 3 and 4 days apart. incrementByThreeFirst is used to choose between incrementing dates by 3 or 4 first, after which it will alternate back and forth.
         public static List<DateTime> FetchDateTimesInRange(DateTime startDate, DateTime endDate, bool incrementByThreeFirst)
         {
             if (startDate == null) throw new ArgumentNullException("startDate");
