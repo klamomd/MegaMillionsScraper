@@ -49,9 +49,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0" Grid.Column="0">Start Date:</Label>
-            <DatePicker Grid.Row="0" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=StartDate}"/>
+            <DatePicker Grid.Row="0" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=StartDate}" IsEnabled="{Binding Path=AreControlsEnabled}"/>
             <Label Grid.Row="1" Grid.Column="0">End Date:</Label>
-            <DatePicker Grid.Row="1" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=EndDate}"/>
+            <DatePicker Grid.Row="1" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=EndDate}" IsEnabled="{Binding Path=AreControlsEnabled}"/>
             <Button Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="5" Margin="5" Command="{Binding Path=ScrapeNumbersCommand}" Content="{Binding ScrapeButtonText}"/>
             <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Visibility="{Binding Path=IsScraping, Converter={StaticResource boolToVisConverter}}">
                 <Label VerticalAlignment="Center">Progress:</Label>
