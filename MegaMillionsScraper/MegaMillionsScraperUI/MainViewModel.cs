@@ -34,6 +34,9 @@ namespace MegaMillionsScraperUI
 
         private bool _isScraping = false;
 
+        private int _currentProgress = 0;
+        private int _progressMaximum = 100;
+
         // PROPERTIES
         public DateTime StartDate
         {
@@ -124,6 +127,32 @@ namespace MegaMillionsScraperUI
             }
         }
 
+        public int ProgressMaximum
+        {
+            get { return _progressMaximum; }
+            set
+            {
+                if (value != _progressMaximum)
+                {
+                    _progressMaximum = value;
+                    RaisePropertyChanged("ProgressMaximum");
+                }
+            }
+        }
+
+        public int CurrentProgress
+        {
+            get { return _currentProgress; }
+            set
+            {
+                if (value != _currentProgress)
+                {
+                    _currentProgress = value;
+                    RaisePropertyChanged("CurrentProgress");
+                }
+            }
+        }
+
 
         // FUNCTIONS
         public void ClearAllFields()
@@ -141,11 +170,17 @@ namespace MegaMillionsScraperUI
             IsScraping = true;
 
             List<DateTime> lottoDates = DateFetcher.FetchDateTimesInRange(StartDate, EndDate);
+
+            // Reset the progress bar.
+            ProgressMaximum = lottoDates.Count;
+            CurrentProgress = 0;
+
             List<MegaMillionsNumbers> megaNumbers = new List<MegaMillionsNumbers>();
             foreach (var dt in lottoDates)
             {
                 MegaMillionsNumbers numbers = await WebpageScraper.GetNumbersForDateAsync(dt);
                 megaNumbers.Add(numbers);
+                CurrentProgress = CurrentProgress + 1;
             }
 
             ScrapedNumbers = megaNumbers;
