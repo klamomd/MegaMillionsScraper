@@ -64,7 +64,7 @@ namespace MegaMillionsScraper
                 throw new Exception("Failed to parse the contents of the mega ball div.");
             }
 
-            return new MegaMillionsNumbers(whiteBalls, megaBall);
+            return new MegaMillionsNumbers(date, whiteBalls, megaBall);
         }
     }
 }
