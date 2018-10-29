@@ -7,6 +7,8 @@ using Prism;
 using Prism.Commands;
 using Prism.Mvvm;
 using MegaMillionsScraper;
+using System.IO;
+using Microsoft.Win32;
 
 namespace MegaMillionsScraperUI
 {
@@ -19,6 +21,14 @@ namespace MegaMillionsScraperUI
             _endDate = DateTime.Today;
 
             _scrapeNumbersCommand = new DelegateCommand(ScrapeNumbers, CanScrapeNumbers);
+            _browseForResultsFilePathCommand = new DelegateCommand(BrowseForResultsFilePath, CanBrowseForResultsFilePath);
+            _resultsFilePath = new FileInfo(@"./Results.txt").FullName;
+
+            _resultsFileSaveDialog = new SaveFileDialog();
+            _resultsFileSaveDialog.FileName = "Results";
+            _resultsFileSaveDialog.DefaultExt = ".txt";
+            _resultsFileSaveDialog.Filter = "Text documents (.txt)|*.txt";
+
         }
 
         // VARIABLES
@@ -31,11 +41,17 @@ namespace MegaMillionsScraperUI
         private Dictionary<int, int> _megaBallOccurrences = new Dictionary<int, int>();
 
         private DelegateCommand _scrapeNumbersCommand;
+        private DelegateCommand _browseForResultsFilePathCommand;
 
         private bool _isScraping = false;
 
         private int _currentProgress = 0;
         private int _progressMaximum = 100;
+
+        private bool _writeResultsToFile = false;
+        private string _resultsFilePath;
+
+        private SaveFileDialog _resultsFileSaveDialog;
 
         // PROPERTIES
         public DateTime StartDate
@@ -108,6 +124,11 @@ namespace MegaMillionsScraperUI
             get { return _scrapeNumbersCommand; }
         }
 
+        public DelegateCommand BrowseForResultsFilePathCommand
+        {
+            get { return _browseForResultsFilePathCommand; }
+        }
+
         public DateTime MaxDate
         {
             get { return DateTime.Today; }
@@ -125,6 +146,7 @@ namespace MegaMillionsScraperUI
                     RaisePropertyChanged("AreControlsEnabled");
                     RaisePropertyChanged("ScrapeButtonText");
                     ScrapeNumbersCommand.RaiseCanExecuteChanged();
+                    BrowseForResultsFilePathCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -169,6 +191,31 @@ namespace MegaMillionsScraperUI
             }
         }
 
+        public bool WriteResultsToFile
+        {
+            get { return _writeResultsToFile; }
+            set
+            {
+                if (value != _writeResultsToFile)
+                {
+                    _writeResultsToFile = value;
+                    RaisePropertyChanged("WriteResultsToFile");
+                }
+            }
+        }
+
+        public string ResultsFilePath
+        {
+            get { return _resultsFilePath; }
+            set
+            {
+                if (value != _resultsFilePath)
+                {
+                    _resultsFilePath = value;
+                    RaisePropertyChanged("ResultsFilePath");
+                }
+            }
+        }
 
         // FUNCTIONS
         public void ClearAllFields()
@@ -203,12 +250,79 @@ namespace MegaMillionsScraperUI
             WhiteBallOccurrences = NumberCalculator.GetOccurrencesOfWhiteBalls(megaNumbers);
             MegaBallOccurrences = NumberCalculator.GetOccurrencesOfMegaBalls(megaNumbers);
 
+            // Write contents to file if specified.
+            if (WriteResultsToFile)
+            {
+                CreateResultsFile(ResultsFilePath);
+            }
+
             IsScraping = false;
         }
 
         public bool CanScrapeNumbers()
         {
             return !IsScraping;
+        }
+
+        public void BrowseForResultsFilePath()
+        {
+            Nullable<bool> result = _resultsFileSaveDialog.ShowDialog();
+
+            if (result == true)
+            {
+                ResultsFilePath = _resultsFileSaveDialog.FileName;
+            }
+        }
+
+        public bool CanBrowseForResultsFilePath()
+        {
+            return !IsScraping;
+        }
+
+        // Creates a text file at the given path which contains the white and mega ball occurrences (ordered by number), and then white and mega ball occurrences (ordered by occurrences).
+        public void CreateResultsFile(string filePath)
+        {
+            using (StreamWriter file = new StreamWriter(filePath))
+            {
+                file.WriteLine("White ball occurrences:");
+                for (int i = 1; i <= WhiteBallOccurrences.Keys.Max(); i++)
+                {
+                    file.WriteLine(string.Format("{0}: {1}", i, WhiteBallOccurrences[i]));
+                }
+
+                file.WriteLine();
+
+                file.WriteLine("Mega ball occurrences:");
+                for (int i = 1; i <= MegaBallOccurrences.Keys.Max(); i++)
+                {
+                    file.WriteLine(string.Format("{0}: {1}", i, MegaBallOccurrences[i]));
+                }
+                file.WriteLine();
+
+                // Order the number of occurrences for both types of numbers (for easier viewing in file).
+                var orderedWhiteBallOccurrences = WhiteBallOccurrences.OrderByDescending(w => w.Value);
+                var orderedMegaBallOccurrences = MegaBallOccurrences.OrderByDescending(w => w.Value);
+
+                file.WriteLine("Ordered white ball occurrences:");
+                foreach (var kv in orderedWhiteBallOccurrences)
+                {
+                    file.WriteLine(string.Format("{0}: {1}", kv.Key, kv.Value));
+                }
+                file.WriteLine();
+
+                file.WriteLine("Ordered mega ball occurrences:");
+                foreach (var kv in orderedMegaBallOccurrences)
+                {
+                    file.WriteLine(string.Format("{0}: {1}", kv.Key, kv.Value));
+                }
+                file.WriteLine();
+
+                file.WriteLine("Raw number sets:");
+                foreach (var numberSet in ScrapedNumbers)
+                {
+                    file.WriteLine(string.Format("{0}: {1} - {2}", numberSet.DateOfDrawingString, numberSet.NumbersString, numberSet.Megaplier));
+                }
+            }
         }
     }
 }

@@ -11,6 +11,9 @@
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="5"/>
+        </Style>
     </Window.Resources>
     <Grid HorizontalAlignment="Center">
         <Grid.RowDefinitions>
@@ -43,6 +46,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -52,8 +56,15 @@
             <DatePicker Grid.Row="0" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=StartDate}" IsEnabled="{Binding Path=AreControlsEnabled}"/>
             <Label Grid.Row="1" Grid.Column="0">End Date:</Label>
             <DatePicker Grid.Row="1" Grid.Column="1" DisplayDateStart="10/31/17" DisplayDateEnd="{Binding Path=MaxDate, Mode=OneWay}" SelectedDate="{Binding Mode=TwoWay, Path=EndDate}" IsEnabled="{Binding Path=AreControlsEnabled}"/>
-            <Button Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="5" Margin="5" Command="{Binding Path=ScrapeNumbersCommand}" Content="{Binding ScrapeButtonText}"/>
-            <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Visibility="{Binding Path=IsScraping, Converter={StaticResource boolToVisConverter}}">
+            <Button Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Command="{Binding Path=ScrapeNumbersCommand}" Content="{Binding ScrapeButtonText}"/>
+            <StackPanel Orientation="Vertical" Grid.Row="2" Grid.ColumnSpan="2" Margin="5">
+                <CheckBox Padding="3" VerticalContentAlignment="Center" IsChecked="{Binding Path=WriteResultsToFile, Mode=TwoWay}" IsEnabled="{Binding Path=AreControlsEnabled}">Write results to file</CheckBox>
+                <DockPanel Visibility="{Binding Path=WriteResultsToFile, Converter={StaticResource boolToVisConverter}}">
+                    <Button DockPanel.Dock="Right" Command="{Binding Path=BrowseForResultsFilePathCommand}">Browse</Button>
+                    <TextBox DockPanel.Dock="Left" IsReadOnly="True" VerticalContentAlignment="Center" Text="{Binding Path=ResultsFilePath}" TextWrapping="NoWrap" MaxWidth="200" />
+                </DockPanel>
+            </StackPanel>
+            <DockPanel Grid.Row="4" Grid.ColumnSpan="2" Visibility="{Binding Path=IsScraping, Converter={StaticResource boolToVisConverter}}">
                 <Label VerticalAlignment="Center">Progress:</Label>
                 <ProgressBar Height="25" Margin="5" Minimum="0" Maximum="{Binding ProgressMaximum}" Value="{Binding CurrentProgress}" />
             </DockPanel>
